@@ -1,73 +1,75 @@
 <template>
-  <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        three-js-test
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-      </div>
+  <div class="p-0">
+    <div id="container" style="width: 100vw; height: calc(100vh - 10em)"></div>
+    <div style="width: 100% height: 10em" class="p-4">
+      {{ speedY }}
+      <b-button
+        @click="
+          speedY = speedY - 0.01;
+          animate();
+        "
+        >Speed -</b-button
+      >
+      <b-button
+        @click="
+          speedY = speedY + 0.01;
+          animate();
+        "
+        >Speed +</b-button
+      >
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+import * as Three from "three";
+
+export default {
+  name: "ThreeTest",
+  data() {
+    return {
+      camera: null,
+      scene: null,
+      renderer: null,
+      mesh: null,
+      speedX: 0.01,
+      speedY: 0.01
+    };
+  },
+  methods: {
+    init() {
+      let container = document.getElementById("container");
+
+      this.camera = new Three.PerspectiveCamera(
+        70,
+        container.clientWidth / container.clientHeight,
+        0.01,
+        10
+      );
+      this.camera.position.z = 1;
+
+      this.scene = new Three.Scene();
+
+      let geometry = new Three.BoxGeometry(0.2, 0.2, 0.2);
+      let material = new Three.MeshNormalMaterial();
+
+      this.mesh = new Three.Mesh(geometry, material);
+      this.scene.add(this.mesh);
+
+      this.renderer = new Three.WebGLRenderer({ antialias: true });
+      this.renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(this.renderer.domElement);
+    },
+    animate() {
+      requestAnimationFrame(this.animate);
+      this.mesh.rotation.x += this.speedX;
+      this.mesh.rotation.y += this.speedY;
+      this.renderer.render(this.scene, this.camera);
+    }
+  },
+  mounted() {
+    this.init();
+    this.animate();
+  }
+};
 </script>
-
-<style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
-
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
-</style>

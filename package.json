@@ -9,8 +9,9 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "bootstrap-vue": "^2.21.2",
     "core-js": "^3.9.1",
-    "nuxt": "^2.15.3"
-  },
-  "devDependencies": {}
+    "nuxt": "^2.15.3",
+    "three": "^0.128.0"
+  }
 }
